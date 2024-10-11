@@ -7,7 +7,7 @@ import (
 )
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
+	if r.URL.Path != "/hello" {
 		http.Error(w, "404 Not found", http.StatusNotFound)
 		return
 	}
@@ -15,12 +15,20 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "405 Method Not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	fmt.Fprintf(w, "Hello, %s!", r.URL.Path[1:])
+
+	fmt.Fprint(w, "Hello World!")
 }
 
 func formHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Handler")
 	if err := r.ParseForm(); err != nil {
+		fmt.Fprintf(w, "ParseForm() err: %v", err)
+		return
 	}
+	fmt.Fprintf(w, "Form: %#v", r.Form)
+	name := r.Form.Get("name")
+	address := r.Form.Get("address")
+	fmt.Fprintf(w, "Name: %s, Address: %s", name, address)
 }
 
 func main() {
