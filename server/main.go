@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/minhvhd/go-server/logger"
 )
 
 func main() {
 
-	http.HandleFunc("/hello", HelloHandler)
+	http.HandleFunc("/hello", logger.Decorate(HelloHandler))
 
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
@@ -18,15 +20,15 @@ func main() {
 }
 
 func HelloHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("HelloHandler Starting..")
-	ctx, cancel := context.WithTimeout(r.Context(), 15*time.Second)
+	logger.Println(r.Context(), "HelloHandler Starting..")
+	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
 
 	defer cancel()
 
 	select {
-	//case <-time.After(10 * time.Second):
-	//	fmt.Println("Timeout after 2 seconds")
+	case <-time.After(10 * time.Second):
+		fmt.Println("Timeout after 10 seconds")
 	case <-ctx.Done():
-		fmt.Println(ctx.Err())
+		logger.Println(ctx, ctx.Err().Error())
 	}
 }

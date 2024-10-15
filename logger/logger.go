@@ -7,7 +7,9 @@ import (
 	"net/http"
 )
 
-const requestIDKey = 1
+type key int64
+
+const requestIDKey = key(1)
 
 func Println(ctx context.Context, msg string) {
 	id, ok := ctx.Value(requestIDKey).(int64)
